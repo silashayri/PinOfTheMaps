@@ -16,6 +16,8 @@ class ListViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     var isimDizisi = [String]()
     var idDizisi = [UUID]()
+    var secilenYerIsmi = ""
+    var secilenyerId: UUID?
     
     
     override func viewDidLoad() {
@@ -25,6 +27,7 @@ class ListViewController: UIViewController, UITableViewDelegate, UITableViewData
         tableView.delegate = self
         navigationController?.navigationBar.topItem?.rightBarButtonItem =
         UIBarButtonItem(barButtonSystemItem: .add,target: self, action: #selector(artiButtonuTiklandi))
+        
         veriAl()
     }
     
@@ -41,8 +44,8 @@ class ListViewController: UIViewController, UITableViewDelegate, UITableViewData
                 
                 isimDizisi.removeAll(keepingCapacity: false)
                 idDizisi.removeAll(keepingCapacity: false)
-                                   
-                                   for sonuc in sonuclar as! [NSManagedObject]{
+                
+                for sonuc in sonuclar as! [NSManagedObject]{
                     if let isim = sonuc.value(forKey: "isim") as? String{
                         isimDizisi.append(isim)
                     }
@@ -52,29 +55,43 @@ class ListViewController: UIViewController, UITableViewDelegate, UITableViewData
                     }
                     
                 }
-                                   tableView.reloadData()
-                                   }
-                                   
-                                   } catch {
-                    
-                    print("Hata!")
-                }
-                                   
-                                   }
-                                   
-                                   
-                                   @objc func artiButtonuTiklandi(){
-                    performSegue(withIdentifier: "toMapsVC", sender: nil)
-                }
-                                   
-                                   func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-                                       return isimDizisi.count
-                }
-                                   
-                                   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-                    let cell = UITableViewCell()
-                                       cell.textLabel?.text = isimDizisi[indexPath.row]
-                    return cell
-                }
-                                   
-                                   }
+                tableView.reloadData()
+            }
+            
+        } catch {
+            
+            print("Hata!")
+        }
+        
+    }
+    
+    
+    @objc func artiButtonuTiklandi(){
+        secilenYerIsmi = ""
+        performSegue(withIdentifier: "toMapsVC", sender: nil)
+    }
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return isimDizisi.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = UITableViewCell()
+        cell.textLabel?.text = isimDizisi[indexPath.row]
+        return cell
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        performSegue(withIdentifier: "toMapsVC", sender: nil)
+    }
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "toMapsVC"{
+            
+            let destinationVC = segue.destination as! MapsViewController
+            destinationVC.secilenId = secilenyerId
+            destinationVC.secilenIsım = secilenYerIsmi
+            
+        }
+    }
+    
+}

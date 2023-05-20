@@ -11,19 +11,19 @@ import CoreLocation
 import CoreData
 
 class MapsViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDelegate{
-
+    
     @IBOutlet weak var mapView: MKMapView!
-    var locationManager = CLLocationManager()
     @IBOutlet weak var isimTextField: UITextField!
     @IBOutlet weak var yorumTextField: UITextField!
-    
+    var locationManager = CLLocationManager()
     var choosenLatitude = Double()
     var choosenLongitude = Double()
     
+    var secilenIsım = ""
+    var secilenId: UUID?
+    
+    
     override func viewDidLoad() {
-       
-        
-        
         super.viewDidLoad()
         
         mapView.delegate = self
@@ -35,6 +35,17 @@ class MapsViewController: UIViewController, MKMapViewDelegate, CLLocationManager
         let gestureRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(getLocation(gestureRecognizer:)))
         gestureRecognizer.minimumPressDuration = 3
         mapView.addGestureRecognizer(gestureRecognizer)
+        
+        if secilenIsım != "" {
+            
+            if let uuidString = secilenId?.uuidString{
+                print(uuidString)
+            }
+            
+        }
+        else {
+            
+        }
         
     }
     
@@ -55,7 +66,7 @@ class MapsViewController: UIViewController, MKMapViewDelegate, CLLocationManager
     }
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-     
+        
         let location = CLLocationCoordinate2D(latitude: locations[0].coordinate.latitude, longitude: locations[0].coordinate.longitude)
         let span = MKCoordinateSpan(latitudeDelta: 0.2, longitudeDelta: 0.2)
         let region = MKCoordinateRegion(center: location, span: span)
@@ -87,6 +98,8 @@ class MapsViewController: UIViewController, MKMapViewDelegate, CLLocationManager
         
         
     }
+    
+    
     
 }
 
